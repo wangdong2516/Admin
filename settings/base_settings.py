@@ -118,3 +118,31 @@ USE_TZ = True
 # https://docs.djangoproject.com/en/3.1/howto/static-files/
 
 STATIC_URL = '/static/'
+
+# 日志配置
+LOGGING = {
+    'version': 1,
+    'disable_existing_loggers': False,
+    # 格式化
+    'formatters': {
+            'standard': {
+                'format': '%(levelname)s %(asctime)s %(pathname)s %(funcName)s %(lineno)d: %(message)s'
+            },
+        },
+    'handlers': {
+        'django_request': {
+            'class': 'logging.FileHandler',
+            'formatter': 'standard',
+            'filename': str (BASE_DIR / 'logs/request.log'),
+            'level': 'DEBUG'
+        },
+    },
+    'loggers': {
+        # 默认django.request不会记录请求成功的日志，只会记录400和500的报错
+        'django.request': {
+            'handlers': ['django_request'],
+            'level': 'DEBUG',
+            'propagate': False,
+        },
+    },
+}
