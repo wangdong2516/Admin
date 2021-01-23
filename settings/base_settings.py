@@ -39,6 +39,7 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     # app
     'user',
+    'rest_framework',
     # command,添加自定义命令之前需要先执行迁移
     'utils',
 ]
@@ -133,7 +134,7 @@ LOGGING = {
         'django_request': {
             'class': 'logging.FileHandler',
             'formatter': 'standard',
-            'filename': str (BASE_DIR / 'logs/request.log'),
+            'filename': str(BASE_DIR / 'logs/request.log'),
             'level': 'DEBUG'
         },
     },

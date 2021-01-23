@@ -2,9 +2,13 @@ from django.http import JsonResponse
 from django.utils.deprecation import MiddlewareMixin
 from collections import defaultdict
 import json
+import logging
 
+from rest_framework.request import Request
+
+request_log = logging.getLogger('django.request')
 from utils.exception import APIException
-
+from rest_framework.views import APIView
 
 class ConvertGetMiddleware(MiddlewareMixin):
     """
@@ -18,11 +22,15 @@ class ConvertGetMiddleware(MiddlewareMixin):
                 1. 单个key，单个value
                 2. 多个key，多个value
         """
-
+        drf_request = Request(request)
         data = defaultdict(list)
-        for key, value in request.GET.items():
+        for key, value in drf_request.query_params.items():
             data[key] = value
         request.query_params = data
+        request_log.info(
+            f"path: {request.path}, method:{request.method}, view_name: {request.resolver_match.view_name},"
+            f"query_params: {request.query_params}, body: {drf_request.data}"
+        )
 
 
 class ValidationErrorMiddleware(MiddlewareMixin):
@@ -31,6 +39,7 @@ class ValidationErrorMiddleware(MiddlewareMixin):
         """
             处理由pydantic抛出的验证错误，并且返回错误信息，错误代码统一为400
         """
+        request = args[0]
         response = {
             'success': False,
             'info': '',
@@ -46,4 +55,8 @@ class ValidationErrorMiddleware(MiddlewareMixin):
                     response.update(info=error_reason)
                 if code:
                     response.update(code=code)
+                request_log.error(
+                    f"path: {request.path}, method:{request.method}, view_name: {request.resolver_match.view_name},"
+                    f"query_params: {request.query_params}, body: {request.body}, response: {response}"
+                )
                 return JsonResponse(data=response, status=400)
