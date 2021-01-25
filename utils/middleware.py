@@ -8,7 +8,7 @@ from rest_framework.request import Request
 
 request_log = logging.getLogger('django.request')
 from utils.exception import APIException
-from rest_framework.views import APIView
+
 
 class ConvertGetMiddleware(MiddlewareMixin):
     """
