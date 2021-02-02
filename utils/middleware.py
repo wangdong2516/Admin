@@ -27,10 +27,10 @@ class ConvertGetMiddleware(MiddlewareMixin):
         for key, value in drf_request.query_params.items():
             data[key] = value
         request.query_params = data
-        request_log.info(
-            f"path: {request.path}, method:{request.method}, view_name: {request.resolver_match.view_name},"
-            f"query_params: {request.query_params}, body: {drf_request.data}"
-        )
+        # request_log.info(
+        #     f"path: {request.path}, method:{request.method}, view_name: {request.resolver_match.view_name},"
+        #     f"query_params: {request.query_params}, body: {drf_request.data}"
+        # )
 
 
 class ValidationErrorMiddleware(MiddlewareMixin):
