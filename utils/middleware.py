@@ -1,3 +1,4 @@
+import redis
 from django.http import JsonResponse
 from django.utils.deprecation import MiddlewareMixin
 from collections import defaultdict
@@ -5,14 +6,18 @@ import json
 import logging
 
 from rest_framework.request import Request
+from utils.exception import APIException
+
 
 request_log = logging.getLogger('django.request')
-from utils.exception import APIException
+
+# 创建redis连接池
+pool = redis.ConnectionPool(host='127.0.0.1', port=6379, max_connections=10, db=1)
 
 
 class ConvertGetMiddleware(MiddlewareMixin):
     """
-        转换GET查询参数为dict的中间件
+        实现全量日志记录
     """
 
     def process_view(self, request, callback, callback_args, callback_kwargs):
@@ -22,7 +27,9 @@ class ConvertGetMiddleware(MiddlewareMixin):
                 1. 单个key，单个value
                 2. 多个key，多个value
         """
-        drf_request = Request(request)
+        drf_request = Request(
+            request=request
+        )
         data = defaultdict(list)
         for key, value in drf_request.query_params.items():
             data[key] = value
@@ -60,3 +67,20 @@ class ValidationErrorMiddleware(MiddlewareMixin):
                     f"query_params: {request.query_params}, body: {request.body}, response: {response}"
                 )
                 return JsonResponse(data=response, status=400)
+
+
+class PVMiddleware(MiddlewareMixin):
+    """
+        网站流量统计中间件，记录响应成功的数量
+    """
+
+    def process_response(self, request, response):
+
+        if response.status_code == 200:
+
+            # 获取一个redis连接,写入访问数
+            connection = redis.Redis(db=1, connection_pool=pool)
+            connection.setnx('visit_num', 0)
+            connection.incr('visit_num', 1)
+
+        return response

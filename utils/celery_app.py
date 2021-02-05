@@ -1,9 +1,12 @@
 import os
+from datetime import timedelta
+
 from celery import Celery
 
 # set the default Django settings module for the 'celery' program.
-os.environ.setdefault('DJANGO_SETTINGS_MODULE', '../settings/local_settings.py')
-
+import sys
+sys.path.append('/home/wangdong/project/Admin/settings')
+os.environ.setdefault('DJANGO_SETTINGS_MODULE', '/home/wangdong/project/Admin/settings/product_settings')
 app = Celery('Admin')
 
 # Using a string here means the worker doesn't have to serialize

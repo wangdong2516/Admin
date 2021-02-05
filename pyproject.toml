@@ -5,7 +5,7 @@ description = ""
 authors = ["wangdong <dong.wang3@bluefocus.com>"]
 
 [tool.poetry.dependencies]
-python = "^3.8"
+python = "^3.6"
 Django = "^3.1.5"
 mysqlclient = "^2.0.3"
 pydantic = "^1.7.3"

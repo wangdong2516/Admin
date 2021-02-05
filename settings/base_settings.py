@@ -9,10 +9,12 @@ https://docs.djangoproject.com/en/3.1/topics/settings/
 For the full list of settings and their values, see
 https://docs.djangoproject.com/en/3.1/ref/settings/
 """
-
+from datetime import timedelta
 from pathlib import Path
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
+from celery.schedules import crontab
+
 BASE_DIR = Path(__file__).resolve().parent.parent
 
 
@@ -55,6 +57,7 @@ MIDDLEWARE = [
     # 自定义的中间件
     'utils.middleware.ConvertGetMiddleware',
     'utils.middleware.ValidationErrorMiddleware',
+    'utils.middleware.PVMiddleware',
 ]
 
 ROOT_URLCONF = 'Admin.urls'
@@ -157,3 +160,36 @@ CELERY_BROKER_URL = 'redis://127.0.0.1:6379/0'
 CELERY_RESULT_BACKEND = 'redis://127.0.0.1:6379/0'
 # 结果序列化方案
 CELERY_RESULT_SERIALIZER = 'json'
+
+# CELERYBEAT_SCHEDULER = 'celery.schedulers.DatabaseScheduler'  # 使用了django-celery默认的数据库调度模型,任务执行周期都被存在你指定的orm数据库中
+
+CELERY_TASK_RESULT_EXPIRES = 1200  # celery任务执行结果的超时时间，我的任务都不需要返回结果,只需要正确执行就行
+
+CELERYD_CONCURRENCY = 10  # celery worker的并发数 也是命令行-c指定的数目,事实上实践发现并不是worker也多越好,保证任务不堆积,加上一定新增任务的预留就可以
+
+CELERYD_PREFETCH_MULTIPLIER = 4  # celery worker 每次去rabbitmq取任务的数量，我这里预取了4个慢慢执行,因为任务有长有短没有预取太多
+
+CELERYD_MAX_TASKS_PER_CHILD = 200  # 每个worker执行了多少任务就会死掉
+
+CELERY_DEFAULT_QUEUE = "default_wj"  # 默认的队列，如果一个消息不符合其他的队列就会放在默认队列里面
+
+CELERY_ACCEPT_CONTENT = ['application/json']
+
+CELERY_TASK_SERIALIZER = 'json'
+
+# 定时任务调度
+CELERY_BEAT_SCHEDULE = {
+    'to_database': {
+        "task": "utils.celery_tasks.to_database",
+        "schedule": timedelta(days=1)
+    }
+}
+
+# celery队列
+CELERY_QUEUES = {
+    "default": {
+        "exchange": "default",
+        "exchange_type": "direct",
+        "routing_key": "default"  # 路由key
+    },
+}
