@@ -69,15 +69,44 @@ class ValidationErrorMiddleware(MiddlewareMixin):
                 return JsonResponse(data=response, status=400)
 
 
-class PVMiddleware(MiddlewareMixin):
-    """
-        网站流量统计中间件，记录响应成功的数量
-    """
+# class PVMiddleware(MiddlewareMixin):
+#     """
+#         网站流量统计中间件，记录响应成功的数量
+#     """
+#
+#     def process_response(self, request, response):
+#
+#         if response.status_code == 200:
+#
+#             # 获取一个redis连接,写入访问数
+#             connection = redis.Redis(db=1, connection_pool=pool)
+#             connection.setnx('visit_num', 0)
+#             connection.incr('visit_num', 1)
+#
+#         return response
 
-    def process_response(self, request, response):
 
+class PVMiddleware:
+
+    def __init__(self, get_response):
+        """
+            初始化
+        :param get_response:下一个中间件或者是视图函数
+        """
+        self.get_response = get_response
+
+    def __call__(self, request):
+        """
+            实现调用逻辑
+        :param request: 请求对象
+        :return:
+        """
+
+        # 在视图函数处理之前的逻辑
+        response = self.get_response(request)
+
+        # 在视图函数处理之后的逻辑
         if response.status_code == 200:
-
             # 获取一个redis连接,写入访问数
             connection = redis.Redis(db=1, connection_pool=pool)
             connection.setnx('visit_num', 0)
