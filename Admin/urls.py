@@ -21,3 +21,7 @@ urlpatterns = [
     re_path('admin/', admin.site.urls),
     re_path('^user/', include('user.urls')),
 ]
+
+
+# 设置admin后台网站标题
+admin.site.site_header = 'Admin管理后台'

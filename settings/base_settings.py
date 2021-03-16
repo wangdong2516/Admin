@@ -109,7 +109,7 @@ AUTH_PASSWORD_VALIDATORS = [
 
 LANGUAGE_CODE = 'en-us'
 
-TIME_ZONE = 'UTC'
+TIME_ZONE = 'Asia/Shanghai'
 
 USE_I18N = True
 
@@ -192,4 +192,13 @@ CELERY_QUEUES = {
         "exchange_type": "direct",
         "routing_key": "default"  # 路由key
     },
+}
+
+# -------RestFrameWork框架配置---------
+# jwt-token签名的时候使用的密钥
+JWT_TOKEN_SECRET_KEY = 'fequ_(pa*bj!!3y_n=*mo1to3sue)!yocd+^0jvslwmad9_74!'
+REST_FRAMEWORK = {
+    'DEFAULT_AUTHENTICATION_CLASSES': (
+        'rest_framework_simplejwt.authentication.JWTAuthentication',
+    )
 }

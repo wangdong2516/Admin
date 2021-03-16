@@ -15,6 +15,16 @@ class UserModel(AbstractUser):
 
     class Meta:
         db_table = 'user'
+        verbose_name = '用户'
+        verbose_name_plural = verbose_name
+        # 自定义权限
+        permissions = [
+            ('export', 'Can export user'),
+            ('view', 'Can view user')
+        ]
+
+    def __str__(self):
+        return self.username
 
 
 class WebsiteVisit(models.Model):
@@ -26,3 +36,12 @@ class WebsiteVisit(models.Model):
 
     class Meta:
         db_table = 'website_visit'
+
+
+class SmbBlackList(models.Model):
+    black_keyword = models.TextField(blank=True, null=True)
+    level = models.SmallIntegerField()
+
+    class Meta:
+        managed = False
+        db_table = 'smb_black_list'

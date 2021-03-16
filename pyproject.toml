@@ -5,7 +5,7 @@ description = ""
 authors = ["wangdong <dong.wang3@bluefocus.com>"]
 
 [tool.poetry.dependencies]
-python = "^3.6"
+python = "^3.8"
 Django = "^3.1.5"
 mysqlclient = "^2.0.3"
 pydantic = "^1.7.3"
@@ -17,6 +17,14 @@ thrift = "^0.13.0"
 itchat = "^1.3.10"
 pygorithm = "^1.0.4"
 mycli = "^1.23.2"
+numpy = "^1.20.0"
+scipy = "^1.6.0"
+matplotlib = "^3.3.4"
+pandas = "^1.2.1"
+djangorestframework-simplejwt = "^4.6.0"
+django-secret-key = "^1.0.1"
+DingtalkChatbot = "^1.5.2"
+
 
 [tool.poetry.dev-dependencies]
 
