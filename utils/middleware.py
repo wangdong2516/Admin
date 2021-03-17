@@ -2,6 +2,7 @@ import redis
 from django.http import JsonResponse
 from django.utils.deprecation import MiddlewareMixin
 from collections import defaultdict
+from typing import Dict
 import json
 import logging
 
@@ -15,29 +16,75 @@ request_log = logging.getLogger('django.request')
 pool = redis.ConnectionPool(host='127.0.0.1', port=6379, max_connections=10, db=1)
 
 
-class ConvertGetMiddleware(MiddlewareMixin):
-    """
-        实现全量日志记录
-    """
+# class ConvertGetMiddleware(MiddlewareMixin):
+#     """
+#         实现全量日志记录
+#     """
+#
+#     def process_view(self, request, callback, callback_args, callback_kwargs):
+#         """
+#             在进入视图函数之前被调用
+#             针对查询参数的处理，因为查询参数可能存在两种情况
+#                 1. 单个key，单个value
+#                 2. 多个key，多个value
+#         """
+#         drf_request = Request(
+#             request=request
+#         )
+#         data = defaultdict(list)
+#         for key, value in drf_request.query_params.items():
+#             data[key] = value
+#         request.query_params = data
+#         # request_log.info(
+#         #     f"path: {request.path}, method:{request.method}, view_name: {request.resolver_match.view_name},"
+#         #     f"query_params: {request.query_params}, body: {drf_request.data}"
+#         # )
 
-    def process_view(self, request, callback, callback_args, callback_kwargs):
+
+class ConvertGetMiddleware:
+
+    def __init__(self, get_response):
+
+        self.get_response = get_response
+
+    def handle_params(self, request) -> Dict:
         """
-            在进入视图函数之前被调用
-            针对查询参数的处理，因为查询参数可能存在两种情况
-                1. 单个key，单个value
-                2. 多个key，多个value
+            统一处理请求参数，包括查询参数，请求体参数
+        :param request: 请求的对象
+        :return: Dict
         """
-        drf_request = Request(
-            request=request
+        if request.method == 'GET':
+            params = dict(request.GET)
+
+        elif request.method in ('POST', 'PUT', 'PATCH'):
+
+            # 表单数据
+            if request.content_type == 'multipart/form-data':
+                params = dict(request.POST)
+
+            # json数据
+            elif request.content_type == 'application/json':
+                params = json.loads(request.body.decode())
+
+            else:
+                params = {}
+        else:
+            params = {}
+
+        return params
+
+    def __call__(self, request):
+
+        # 获取请求参数
+        params = self.handle_params(request)
+
+        response = self.get_response(request)
+
+        request_log.info(
+            f"path: {request.path}, method:{request.method}, view_name: {request.resolver_match.view_name} params: {params}"
         )
-        data = defaultdict(list)
-        for key, value in drf_request.query_params.items():
-            data[key] = value
-        request.query_params = data
-        # request_log.info(
-        #     f"path: {request.path}, method:{request.method}, view_name: {request.resolver_match.view_name},"
-        #     f"query_params: {request.query_params}, body: {drf_request.data}"
-        # )
+
+        return response
 
 
 class ValidationErrorMiddleware(MiddlewareMixin):

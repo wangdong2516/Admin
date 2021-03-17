@@ -24,6 +24,7 @@ pandas = "^1.2.1"
 djangorestframework-simplejwt = "^4.6.0"
 django-secret-key = "^1.0.1"
 DingtalkChatbot = "^1.5.2"
+sentry-sdk = "^1.0.0"
 
 
 [tool.poetry.dev-dependencies]
