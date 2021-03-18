@@ -1,3 +1,5 @@
+import traceback
+
 import redis
 from django.http import JsonResponse
 from django.utils.deprecation import MiddlewareMixin
@@ -6,8 +8,9 @@ from typing import Dict
 import json
 import logging
 
-from rest_framework.request import Request
+from sentry_sdk import capture_exception
 from utils.exception import APIException
+from utils.dingding import send
 
 
 request_log = logging.getLogger('django.request')
@@ -89,11 +92,18 @@ class ConvertGetMiddleware:
 
 class ValidationErrorMiddleware(MiddlewareMixin):
 
-    def process_exception(self, *args, **kwargs):
+    def process_exception(self, request, exception, *args, **kwargs):
         """
             处理由pydantic抛出的验证错误，并且返回错误信息，错误代码统一为400
         """
-        request = args[0]
+        # 将异常发送到sentry
+        if exception:
+            # 组织异常信息，需要注意的是，这里的消息必须包含关键字通知
+            message = f'通知:url: {request.build_absolute_uri()}, msg:{repr(exception)}, ````{traceback.format_exc()}````'
+            # 将异常信息发送到钉钉
+            send(message=message, at_modiles=[18734872516])
+            capture_exception(exception)
+
         response = {
             'success': False,
             'info': '',

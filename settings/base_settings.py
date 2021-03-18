@@ -49,7 +49,9 @@ INSTALLED_APPS = [
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
+    'django.middleware.cache.UpdateCacheMiddleware',
     'django.middleware.common.CommonMiddleware',
+    'django.middleware.cache.FetchFromCacheMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
@@ -202,3 +204,24 @@ REST_FRAMEWORK = {
         'rest_framework_simplejwt.authentication.JWTAuthentication',
     )
 }
+
+
+# ------缓存配置(仅限本地，开发环境需要添加密码)--------------------
+CACHES = {
+    "default": {
+        "BACKEND": "django_redis.cache.RedisCache",
+        "LOCATION": "redis://127.0.0.1:6379/2",
+        "TIMEOUT": 600,  # 缓存的默认超时时间，默认是300秒
+        "OPTIONS": {
+            "CLIENT_CLASS": "django_redis.client.DefaultClient",
+            "MAX_ENTRIES": 300,  # 删除旧值之前默认缓存的最大条目，默认是300
+            "CULL_FREQUENCY": 3,  # 当缓存的条目数达到MAX_ENTRIES指定的条目数之后，被淘汰数据占比
+        },
+        "KEY_PREFIX": 'Admin',  # 所有缓存键的前缀
+        'VERSION': '1.00',  # 缓存的版本号
+        'KEY_FUNCTION': None,   # 一个指定如何生成缓存key的函数路径
+    }
+}
+
+# 每个页面缓存的时效,单位为秒
+CACHE_MIDDLEWARE_SECONDS = 600
