@@ -126,23 +126,6 @@ class ValidationErrorMiddleware(MiddlewareMixin):
                 return JsonResponse(data=response, status=400)
 
 
-# class PVMiddleware(MiddlewareMixin):
-#     """
-#         网站流量统计中间件，记录响应成功的数量
-#     """
-#
-#     def process_response(self, request, response):
-#
-#         if response.status_code == 200:
-#
-#             # 获取一个redis连接,写入访问数
-#             connection = redis.Redis(db=1, connection_pool=pool)
-#             connection.setnx('visit_num', 0)
-#             connection.incr('visit_num', 1)
-#
-#         return response
-
-
 class PVMiddleware:
 
     def __init__(self, get_response):

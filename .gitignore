@@ -2,3 +2,5 @@
 **/__pycache__
 **/local_settings.py
 logs/
+celerybeat-schedule.db
+**.pid
