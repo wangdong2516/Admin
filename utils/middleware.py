@@ -84,7 +84,7 @@ class ConvertGetMiddleware:
         response = self.get_response(request)
 
         request_log.info(
-            f"path: {request.path}, method:{request.method}, view_name: {request.resolver_match.view_name} params: {params}"
+            f"path: {request.path}, method:{request.method}, params: {params}"
         )
 
         return response

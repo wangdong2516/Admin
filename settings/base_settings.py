@@ -40,7 +40,7 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     # app
-    'user',
+    'user.apps.UserConfig',
     'rest_framework',
     # command,添加自定义命令之前需要先执行迁移
     'utils',
@@ -142,6 +142,12 @@ LOGGING = {
             'filename': str(BASE_DIR / 'logs/request.log'),
             'level': 'DEBUG'
         },
+        'signal_log': {
+            'class': 'logging.FileHandler',
+            'formatter': 'standard',
+            'filename': str(BASE_DIR / 'logs/signal.log'),
+            'level': 'INFO'
+        }
     },
     'loggers': {
         # 默认django.request不会记录请求成功的日志，只会记录400和500的报错
@@ -150,6 +156,11 @@ LOGGING = {
             'level': 'DEBUG',
             'propagate': False,
         },
+        'signal': {
+            'handlers': ['signal_log'],
+            'level': 'INFO',
+            'propagate': False
+        }
     },
 }
 
