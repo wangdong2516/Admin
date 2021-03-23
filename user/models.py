@@ -3,6 +3,7 @@ from django.db import models
 
 
 # Create your models here.
+from utils.model import BaseModel
 
 
 class UserModel(AbstractUser):
