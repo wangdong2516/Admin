@@ -8,5 +8,4 @@ urlpatterns = [
     re_path('info/$', views.UserInfoView.as_view(), name='user_info'),
     re_path('api/token/', TokenObtainPairView.as_view(), name='token_obtain_pair'),
     re_path('api/token/refresh/', TokenRefreshView.as_view(), name='token_refresh'),
-
 ]

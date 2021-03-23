@@ -16,10 +16,12 @@ Including another URLconf
 from django.contrib import admin
 from django.urls import re_path
 from django.urls import include
+from haystack.views import SearchView
 
 urlpatterns = [
     re_path('admin/', admin.site.urls),
     re_path('^user/', include('user.urls')),
+    re_path(r'^search/$', SearchView(), name='haystack_search'),
 ]
 
 

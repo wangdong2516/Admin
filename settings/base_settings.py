@@ -44,6 +44,7 @@ INSTALLED_APPS = [
     'rest_framework',
     # command,添加自定义命令之前需要先执行迁移
     'utils',
+    'haystack',
 ]
 
 MIDDLEWARE = [
@@ -67,7 +68,7 @@ ROOT_URLCONF = 'Admin.urls'
 TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
-        'DIRS': [],
+        'DIRS': [str(BASE_DIR / 'templates')],
         'APP_DIRS': True,
         'OPTIONS': {
             'context_processors': [
@@ -236,3 +237,16 @@ CACHES = {
 
 # 每个页面缓存的时效,单位为秒
 CACHE_MIDDLEWARE_SECONDS = 600
+
+# -----------django haystack配置---------------
+# 搜索引擎后端，注意这里haystack目前最高支持5.x版本的ES
+HAYSTACK_CONNECTIONS = {
+    'default': {
+        'ENGINE': 'haystack.backends.elasticsearch5_backend.Elasticsearch5SearchEngine',
+        'URL': 'http://127.0.0.1:9200/',
+        'INDEX_NAME': 'haystack',
+    },
+}
+
+# 在数据库发生更改的时候自动更新索引
+HAYSTACK_SIGNAL_PROCESSOR = 'haystack.signals.RealtimeSignalProcessor'
