@@ -29,6 +29,8 @@ flower = "^0.9.7"
 django-smart-selects = "^1.5.9"
 setuptools-scm = "^6.0.1"
 django-haystack = "^3.0"
+pytest = "^6.2.2"
+pytest-django = "^4.1.0"
 
 
 
