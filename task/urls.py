@@ -1,4 +1,4 @@
-"""Admin URL Configuration
+""" URL Configuration
 
 The `urlpatterns` list routes URLs to views. For more information please see:
     https://docs.djangoproject.com/en/3.1/topics/http/urls/
@@ -15,16 +15,8 @@ Including another URLconf
 """
 from django.contrib import admin
 from django.urls import re_path
-from django.urls import include
-from haystack.views import SearchView
+from task.views import CreateTaskView
 
 urlpatterns = [
-    re_path('admin/', admin.site.urls),
-    re_path('^user/', include('user.urls')),
-    re_path('^tasks/', include('task.urls')),
-    re_path(r'^search/$', SearchView(), name='haystack_search'),
+    re_path(r'^create/$', CreateTaskView.as_view(), name='create_task'),
 ]
-
-
-# 设置admin后台网站标题
-admin.site.site_header = 'Admin管理后台'

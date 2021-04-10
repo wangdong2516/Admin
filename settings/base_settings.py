@@ -44,7 +44,9 @@ INSTALLED_APPS = [
     'rest_framework',
     # command,添加自定义命令之前需要先执行迁移
     'utils',
-    'haystack',
+    'task.apps.TaskConfig',
+    'django_mysql',
+    # 'haystack',
 ]
 
 MIDDLEWARE = [

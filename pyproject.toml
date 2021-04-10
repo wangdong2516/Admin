@@ -35,6 +35,14 @@ uvicorn = "^0.13.4"
 gunicorn = "^20.0.4"
 uvloop = "^0.15.2"
 httptools = "^0.1.1"
+fire = "^0.4.0"
+pybloom_live = "^3.0.0"
+redisbloom = "^0.4.0"
+Markdown = "^3.3.4"
+django-filter = "^2.4.0"
+django-mysql = "^3.11.1"
+Scrapy = "^2.4.1"
+scrapy-djangoitem = "^1.1.1"
 
 
 
