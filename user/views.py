@@ -1,14 +1,20 @@
 from datetime import datetime
 from datetime import timedelta
+
+from django_filters import rest_framework as filters
 from jwt import encode
 from jwt import decode
+from rest_framework.generics import ListAPIView
 from rest_framework.response import Response
+from rest_framework.throttling import UserRateThrottle
 
+from user.models import Product, Manufacturer
 from user.validation import IndexModel
 from django.http import JsonResponse
 from django.conf import settings
 from rest_framework.views import APIView
-from user.serializers import UserSerializer
+from user.serializers import UserSerializer, ProductSerializer
+from user.filters import ProductFilter
 from utils.error_code import UserErrorCode
 # Create your views here.
 from utils.response import DRFResponse
@@ -44,6 +50,8 @@ class UserInfoView(APIView):
     """
         用户信息
     """
+    # 限流
+    throttle_classes = (UserRateThrottle,)
 
     def get(self, request):
         d = {
@@ -54,3 +62,16 @@ class UserInfoView(APIView):
         }
         print(request.user)
         return JsonResponse({'data': d, 'code': 20000})
+
+
+class FilterView(ListAPIView):
+    filter_backends = (filters.DjangoFilterBackend,)
+    filterset_class = ProductFilter
+    queryset = Product.objects.all()
+    serializer_class = ProductSerializer
+
+
+class DetailView(APIView):
+
+    def get(self, request):
+        pass

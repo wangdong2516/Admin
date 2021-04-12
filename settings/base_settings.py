@@ -46,15 +46,16 @@ INSTALLED_APPS = [
     'utils',
     'task.apps.TaskConfig',
     'django_mysql',
+    'django_filters'
     # 'haystack',
 ]
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
-    'django.middleware.cache.UpdateCacheMiddleware',  # 对Django项目使用整站缓存
+    # 'django.middleware.cache.UpdateCacheMiddleware',  # 对Django项目使用整站缓存
     'django.middleware.common.CommonMiddleware',
-    'django.middleware.cache.FetchFromCacheMiddleware',  # 对Django项目使用整站缓存
+    # 'django.middleware.cache.FetchFromCacheMiddleware',  # 对Django项目使用整站缓存
     'django.middleware.csrf.CsrfViewMiddleware',
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
@@ -214,8 +215,22 @@ CELERY_QUEUES = {
 # jwt-token签名的时候使用的密钥
 JWT_TOKEN_SECRET_KEY = 'fequ_(pa*bj!!3y_n=*mo1to3sue)!yocd+^0jvslwmad9_74!'
 REST_FRAMEWORK = {
+    #  认证配置
     'DEFAULT_AUTHENTICATION_CLASSES': (
         'rest_framework_simplejwt.authentication.JWTAuthentication',
+    ),
+    #  限流配置，需要注意的是，限流和Django框架的缓存存在冲突，启用全栈缓存将会导致限流失效
+    # https://q1mi.github.io/Django-REST-framework-documentation/api-guide/throttling_zh/
+    'DEFAULT_THROTTLE_CLASSES': (
+        # 'rest_framework.throttling.AnonRateThrottle',
+        'rest_framework.throttling.UserRateThrottle',
+    ),
+    'DEFAULT_THROTTLE_RATES': {
+        'user': '5/min'
+    },
+    # 默认的过滤器后端
+    'DEFAULT_FILTER_BACKENDS': (
+        'django_filters.rest_framework.DjangoFilterBackend',
     )
 }
 

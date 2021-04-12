@@ -3,7 +3,8 @@ from datetime import timedelta
 from rest_framework import serializers
 from rest_framework_simplejwt.tokens import RefreshToken
 
-from user.models import UserModel
+from user.models import UserModel, Manufacturer
+from user.models import Product
 from utils.error_code import UserErrorCode
 from django.conf import settings
 from jwt import encode
@@ -70,3 +71,13 @@ class UserSerializer(serializers.Serializer):
         }
 
         return validate_data
+
+
+class ProductSerializer(serializers.ModelSerializer):
+
+    # manufacturer = serializers.HyperlinkedRelatedField(view_name='detail', read_only=True)
+    manufacturer = serializers.StringRelatedField()
+
+    class Meta:
+        model = Product
+        fields = '__all__'
