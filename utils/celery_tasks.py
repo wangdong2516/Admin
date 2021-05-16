@@ -13,3 +13,7 @@ def to_database():
     """
     visit_num = connection.get('visit_num')
     WebsiteVisit.objects.create(visit=visit_num)
+
+@app.task
+def test():
+    print('test')

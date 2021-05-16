@@ -43,6 +43,8 @@ django-filter = "^2.4.0"
 django-mysql = "^3.11.1"
 Scrapy = "^2.4.1"
 scrapy-djangoitem = "^1.1.1"
+django-celery-beat = "^2.2.0"
+celery = "4.4"
 
 
 
