@@ -45,6 +45,10 @@ Scrapy = "^2.4.1"
 scrapy-djangoitem = "^1.1.1"
 django-celery-beat = "^2.2.0"
 celery = "4.4"
+channels = "^3.0.3"
+channels-redis = "^3.2.0"
+django-environ = "^0.4.5"
+httpx = "^0.18.1"
 
 
 

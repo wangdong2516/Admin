@@ -1,4 +1,4 @@
-"""Admin URL Configuration
+""" URL Configuration
 
 The `urlpatterns` list routes URLs to views. For more information please see:
     https://docs.djangoproject.com/en/3.1/topics/http/urls/
@@ -13,20 +13,12 @@ Including another URLconf
     1. Import the include() function: from django.urls import include, path
     2. Add a URL to urlpatterns:  path('blog/', include('blog.urls'))
 """
-from django.contrib import admin
 from django.urls import re_path
-from django.urls import include
-from haystack.views import SearchView
+from . import views
+
+app_name = "chat"
 
 urlpatterns = [
-    re_path('admin/', admin.site.urls),
-    re_path('^user/', include('user.urls')),
-    re_path('^tasks/', include('task.urls')),
-    re_path(r'^search/$', SearchView(), name='haystack_search'),
-    re_path('chat/', include('chat.urls')),
-    re_path('bots/', include('bots.urls')),
+    re_path('<str:room_name>/', views.room, name='room'),
+    re_path('', views.index, name='index'),
 ]
-
-
-# 设置admin后台网站标题
-admin.site.site_header = 'Admin管理后台'

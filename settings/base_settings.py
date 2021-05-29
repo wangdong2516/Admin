@@ -49,6 +49,8 @@ INSTALLED_APPS = [
     'django_filters',
     'django_celery_beat',
     # 'haystack',
+    'channels',
+    'bots',
 ]
 
 MIDDLEWARE = [
@@ -86,7 +88,7 @@ TEMPLATES = [
 ]
 
 WSGI_APPLICATION = 'Admin.wsgi.application'
-
+ASGI_APPLICATION = "Admin.asgi.application"
 
 # Database
 # https://docs.djangoproject.com/en/3.1/ref/settings/#databases
@@ -268,3 +270,19 @@ HAYSTACK_CONNECTIONS = {
 
 # 在数据库发生更改的时候自动更新索引
 HAYSTACK_SIGNAL_PROCESSOR = 'haystack.signals.RealtimeSignalProcessor'
+
+# ----------------django-channels配置---------------
+import environ
+
+ROOT_DIR = environ.Path(__file__) - 2
+env = environ.Env()
+environ.Env.read_env(str(ROOT_DIR.path('.env')))
+
+CHANNEL_LAYERS = {
+    "default": {
+        "BACKEND": "channels_redis.core.RedisChannelLayer",
+        "CONFIG": {
+            "hosts": [env.str('REDIS_URL', 'redis://127.0.0.1:6379/2')],
+        },
+    },
+}
